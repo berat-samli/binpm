@@ -8,8 +8,9 @@ import (
 )
 
 func main() {
+	// En az 3 argüman bekliyoruz
 	if len(os.Args) < 3 {
-		fmt.Println("Usage: binpm <command> <package>")
+		fmt.Println("Usage: binpm <command> <package> [--packagedir=<path_to_package_dir>]")
 		return
 	}
 
@@ -25,7 +26,7 @@ func main() {
 
 		fmt.Printf("Detected OS: %s, Architecture: %s\n", osType, archType)
 
-		internal.InstallPackage(pkgName)
+		internal.InstallPackage(pkgName, osType)
 	default:
 		fmt.Println("Unknown command:", command)
 	}

@@ -6,9 +6,13 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"runtime"
+	"path/filepath"
 )
 
+// Sabit dizin (örneğin /usr/local/share/binpm)
+const defaultPackageDir = "/usr/local/share/binpm"
+
+// Paket yapısı
 type Package struct {
 	Dependencies  []string `json:"dependencies"`
 	InstallScript string   `json:"install_script"`
@@ -16,35 +20,55 @@ type Package struct {
 
 var packageList map[string]map[string]Package
 
+// loadPackageList: Paket listesini sabit dizinden yükler
 func loadPackageList() {
-	file, err := os.Open("packages/package_list.json")
+	// Çevresel değişkenden package dizinini al
+	packageDir := os.Getenv("BINPM_PACKAGE_DIR")
+
+	// Eğer çevresel değişken tanımlı değilse, varsayılan bir yol kullan
+	if packageDir == "" {
+		packageDir = "/usr/local/share/binpm"
+	}
+
+	// package_list.json dosyasının tam yolunu oluştur
+	jsonPath := filepath.Join(packageDir, "package_list.json")
+
+	// JSON dosyasını aç
+	file, err := os.Open(jsonPath)
 	if err != nil {
-		fmt.Println("Error opening package list:", err)
+		fmt.Printf("Error opening package list: %v\n", err)
 		return
 	}
 	defer file.Close()
 
 	byteValue, _ := ioutil.ReadAll(file)
 
-	json.Unmarshal(byteValue, &packageList)
+	// JSON'u çözümle
+	err = json.Unmarshal(byteValue, &packageList)
+	if err != nil {
+		fmt.Printf("Error unmarshalling package list: %v\n", err)
+	}
 }
 
-func InstallPackage(pkgName string) {
+// InstallPackage: Paket yüklemesi ve bağımlılıkların kontrol edilmesi
+func InstallPackage(pkgName string, osType string) {
 	loadPackageList()
 
-	osType := runtime.GOOS // "linux", "darwin", "windows" gibi değerler döner
-
+	// Uygun paketi bul
 	pkg, exists := packageList[pkgName][osType]
 	if !exists {
-		fmt.Println("Package not found for this OS:", pkgName)
+		fmt.Printf("Package not found for this OS: %s\n", pkgName)
 		return
 	}
 
+	// Bağımlılıkları yükle
 	installDependencies(pkg.Dependencies)
 
-	runInstallScript(pkg.InstallScript)
+	// Yükleme script'ini çalıştır
+	runInstallScript(pkg.InstallScript, osType)
 }
 
+// installDependencies: Bağımlılıkları yükleme fonksiyonu
 func installDependencies(dependencies []string) {
 	if len(dependencies) == 0 {
 		fmt.Println("No dependencies to install.")
@@ -64,20 +88,24 @@ func installDependencies(dependencies []string) {
 	}
 }
 
-func runInstallScript(scriptPath string) {
-	fmt.Printf("Running install script: %s\n", scriptPath)
+// runInstallScript: Yükleme script'ini çalıştırma fonksiyonu
+func runInstallScript(scriptPath string, osType string) {
+	// Sabit dizindeki script'in tam yolunu oluştur
+	fullPath := filepath.Join(defaultPackageDir, scriptPath)
+
+	fmt.Printf("Running install script: %s\n", fullPath)
 
 	var cmd *exec.Cmd
-	if runtime.GOOS == "windows" {
-		cmd = exec.Command("powershell", "-ExecutionPolicy", "Bypass", "-File", scriptPath)
+	if osType == "windows" {
+		cmd = exec.Command("powershell", "-ExecutionPolicy", "Bypass", "-File", fullPath)
 	} else {
-		cmd = exec.Command("bash", scriptPath)
+		cmd = exec.Command("bash", fullPath)
 	}
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
 	if err != nil {
-		fmt.Printf("Error running script %s: %v\n", scriptPath, err)
+		fmt.Printf("Error running script %s: %v\n", fullPath, err)
 	}
 }

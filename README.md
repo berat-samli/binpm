@@ -1,5 +1,4 @@
-
-# binpm - A Simple Package Manager
+# binpm - binpm is not package manager
 
 `binpm` is a lightweight package manager written in Go that allows you to install tools like Docker, Terraform, and more on different operating systems, including Linux, MacOS, and Windows. It automatically detects your operating system and architecture, installs the necessary dependencies, and runs the correct installation scripts.
 
@@ -43,21 +42,41 @@ go build -o binpm cmd/main.go
 go build -o binpm.exe cmd/main.go
 ```
 
-### 3. Add `binpm` to your PATH
+### 3. Environment Variable Setup
 
-To use `binpm` like a regular package manager (without `./`), you need to add it to your PATH.
+`binpm` uses environment variables to find the necessary `package_list.json` file and installation scripts. You will need to set an environment variable `BINPM_PACKAGE_DIR` to specify the directory where your scripts and `package_list.json` are located.
 
-#### Linux / MacOS:
+You can do this by creating a `.env` file in your project directory and specifying the path to your package directory.
 
-Move the binary to `/usr/local/bin`:
+1. Create a `.env` file in your project directory:
 
 ```bash
-sudo cp binpm /usr/local/bin/
+touch .env
 ```
 
-#### Windows:
+2. Add the following line to your `.env` file:
 
-Move the binary (`binpm.exe`) to a directory that is in your PATH (e.g., `C:\Windows\System32`), or add its location to the PATH manually.
+```bash
+BINPM_PACKAGE_DIR=/path/to/your/packages
+```
+
+Replace `/path/to/your/packages` with the actual path where your `package_list.json` and scripts are located.
+
+3. Load the `.env` file into your environment:
+
+For **Linux/MacOS**:
+
+```bash
+export $(grep -v '^#' .env | xargs)
+```
+
+For **Windows (PowerShell)**:
+
+```powershell
+$env:BINPM_PACKAGE_DIR = "C:\path\to\your\packages"
+```
+
+After setting up the environment variable, `binpm` will automatically look for the `package_list.json` and installation scripts in the specified directory.
 
 ### 4. Verify Installation
 
@@ -89,19 +108,27 @@ binpm install docker
 
 This will automatically detect your operating system and architecture, install the required dependencies, and run the appropriate installation script.
 
-### Uninstall a tool
+### Uninstall binpm
 
-Linux / MacOS:
-To uninstall binpm, simply remove the binary from /usr/local/bin:
+For now, uninstalling `binpm` is a manual process. You just need to remove the binary from your system.
+
+#### Linux / MacOS:
+
+To uninstall `binpm`, simply remove the binary from `/usr/local/bin`:
+
 ```bash
 sudo rm /usr/local/bin/binpm
 ```
 
-Windows:
-To uninstall binpm on Windows, delete the binpm.exe file from the directory where you placed it (e.g., C:\Windows\System32 or another PATH directory):
-```bash
+#### Windows:
+
+To uninstall `binpm` on Windows, delete the `binpm.exe` file from the directory where you placed it (e.g., `C:\Windows\System32` or another PATH directory):
+
+```powershell
 Remove-Item C:\Windows\System32\binpm.exe
 ```
+
+This will remove `binpm` from your system.
 
 ---
 
@@ -187,7 +214,7 @@ You can test the package manager by running it locally:
 
 ## Roadmap
 
-- [ ] Add uninstall functionality
+- [ ] Add uninstall functionality for tools
 - [ ] Add versioning support for package installations
 - [ ] Improve error handling and logging
 - [ ] Add more tools (Node.js, Python, etc.)
