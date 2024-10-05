@@ -1,0 +1,30 @@
+{
+    "docker": {
+        "linux": {
+            "dependencies": ["curl", "apt-transport-https"],
+            "install_script": "scripts/docker/install_docker_linux.sh"
+        },
+        "darwin": {
+            "dependencies": [],
+            "install_script": "scripts/docker/install_docker_mac.sh"
+        },
+        "windows": {
+            "dependencies": [],
+            "install_script": "scripts/docker/install_docker_windows.ps1"
+        }
+    },
+    "terraform": {
+        "linux": {
+            "dependencies": ["unzip", "curl"],
+            "install_script": "scripts/terraform/install_terraform_linux.sh"
+        },
+        "darwin": {
+            "dependencies": [],
+            "install_script": "scripts/terraform/install_terraform_mac.sh"
+        },
+        "windows": {
+            "dependencies": [],
+            "install_script": "scripts/terraform/install_terraform_windows.ps1"
+        }
+    }
+}
