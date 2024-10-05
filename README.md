@@ -1,4 +1,4 @@
-# binpm - binpm is not package manager
+# binpm - binpm is not package manager (still in dev)
 
 `binpm` is a lightweight package manager written in Go that allows you to install tools like Docker, Terraform, and more on different operating systems, including Linux, MacOS, and Windows. It automatically detects your operating system and architecture, installs the necessary dependencies, and runs the correct installation scripts.
 
