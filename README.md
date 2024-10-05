@@ -22,7 +22,7 @@
 To start using `binpm`, first clone the repository:
 
 ```bash
-git clone https://github.com/bertt6/binpm.git
+git clone https://github.com/yourusername/binpm.git
 cd binpm
 ```
 
@@ -186,7 +186,7 @@ To run `binpm` locally:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/bertt6/binpm.git
+   git clone https://github.com/yourusername/binpm.git
    cd binpm
    ```
 
