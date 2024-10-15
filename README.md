@@ -41,12 +41,18 @@ For Linux systems, follow these steps to install `binpm` globally:
    git clone https://github.com/bertt6/binpm.git
    ```
 
-2. Run the setup script to build and install `binpm`:
+2. Create .env file for SCRIPTS_PATH:
+   ```
+   SCRIPTS_PATH=/binpm/folder/path
+   ```
+
+
+3. Run the setup script to build and install `binpm`:
 
    ```bash
    cd binpm
-   chmod +x setup_linux.sh
-   ./setup_linux.sh
+   chmod +x setup.sh
+   ./setup.sh
    ```
 
 This will move the `binpm` binary to `/usr/local/bin/` and set up the necessary shell scripts.

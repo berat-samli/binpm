@@ -1,0 +1,37 @@
+name: Go Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '^1.16'
+
+    - name: Install dependencies
+      run: go mod tidy
+
+    - name: Build the project
+      run: go build -o binpm
+
+    - name: Run tests
+      run: go test ./...
+
+    - name: Upload binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: binpm
+        path: ./binpm
