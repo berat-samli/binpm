@@ -31,7 +31,7 @@ jobs:
       run: go test ./...
 
     - name: Upload binary
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3  # v2 yerine v3 sürümüne güncellendi
       with:
         name: binpm
         path: ./binpm
