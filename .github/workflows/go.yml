@@ -14,12 +14,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3 # En güncel sürüm
 
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v4 # En güncel Go ayarı
       with:
-        go-version: '^1.16'
+        go-version: '1.22' # Go 1.19 kullanacağız, istersen bunu değiştirebilirsin
 
     - name: Install dependencies
       run: go mod tidy
@@ -31,7 +31,7 @@ jobs:
       run: go test ./...
 
     - name: Upload binary
-      uses: actions/upload-artifact@v3  # v2 yerine v3 sürümüne güncellendi
+      uses: actions/upload-artifact@v3 # En güncel sürümde artefaktı yüklüyoruz
       with:
         name: binpm
         path: ./binpm
